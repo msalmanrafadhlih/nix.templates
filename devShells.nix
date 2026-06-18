@@ -36,5 +36,13 @@ lib.genAttrs lib.systems.flakeExposed (
         ./nodejs/devenv.nix
       ];
     };
+
+    # bun : nix develop github:msalmanrafadhlih/flexinix#bun --impure
+    bun = inputs.devenv.lib.mkShell {
+      inherit inputs pkgs;
+      modules = [
+        ./bun/devenv.nix
+      ];
+    };
   }
 )

@@ -56,6 +56,17 @@ let
     };
 in
 {
+  bun = mkWelcomeText {
+    path = ./bun;
+    name = "Bun Template";
+    description = ''
+      A basic Bun application template with a package build.
+    '';
+    buildTools = [
+      "bun"
+    ];
+  };
+
   nodejs = mkWelcomeText {
     path = ./nodejs;
     name = "Nodejs Template";

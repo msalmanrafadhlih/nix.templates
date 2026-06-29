@@ -44,5 +44,13 @@ lib.genAttrs lib.systems.flakeExposed (
         ./bun/devenv.nix
       ];
     };
+
+    # rust : nix develop github:msalmanrafadhlih/flexinix#bun --impure
+    rust-basic =  inputs.devenv.lib.mkShell {
+      inherit inputs pkgs;
+      modules = [
+        ./rust/devenv.nix
+      ];
+    };
   }
 )

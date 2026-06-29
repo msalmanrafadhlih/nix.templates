@@ -2,65 +2,39 @@
   description = "Merge nix-templates with mine";
   outputs =
     { nix-templates, ... }@inputs:
+    let
+      lib = inputs.nixpkgs-lib;
+    in
     {
-      # nix flake init -t github:msalmanrafadhlih/nixdev#<template>
+      # nix flake init -t github:msalmanrafadhlih/nix.templates#<template>
       templates = import ./templates.nix { inherit nix-templates; };
 
-      # nix develop github:msalmanrafadhlih/nixdev#<template> --impure
-      devShells = import ./devShells.nix inputs;
+      # nix develop github:msalmanrafadhlih/nix.templates#<template> --impure
+      devShells = lib.genAttrs lib.systems.flakeExposed (system: {
+        flutter    = inputs.flutter-template.devShells.${system}.default;
+        nodejs     = inputs.nodejs-template.devShells.${system}.default;
+        rust-basic = inputs.rust-template.devShells.${system}.default;
+        bun        = inputs.bun-template.devShells.${system}.default;
+      });
 
-      # inputs.nixdev.devenvModules.<template>
-      devenvModules = import ./devenv.nix ;
+      # inputs.<thisrepo>.devenvModules.<template>
+      devenvModules = with inputs; {
+        flutter     = flutter.devenvModules.default;
+        nodejs      = nodejs.devenvModules.default;
+        bun         = bun.devenvModules.default;
+        rust-basic  = rust.devenvModules.default;
+      };
     };
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-lib.url = "github:NixOS/nixpkgs/nixos-unstable?dir=lib";
+    nixpkgs-lib = "github:NixOS/nixpkgs/nixos-unstable?dir=lib";
+
+    # templates
     nix-templates.url = "github:nix-community/templates";
 
-    # Utilities
-    flake-utils.url = "github:numtide/flake-utils"; # MultiSystem helper
-
-    flake-parts = {
-      url = "github:hercules-ci/flake-parts";
-      inputs.nixpkgs-lib.follows = "nixpkgs-lib";
-    }; # tool = Modular Flake
-
-    flake-compat = {
-      url = "github:edolstra/flake-compat";
-      flake = false;
-    }; # tool = nonflake
-
-    git-hooks = {
-      url = "github:cachix/git-hooks.nix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs-lib";
-        flake-compat.follows = "flake-compat";
-      };
-    };
-
-    # development_tools
-    devenv = {
-      url = "github:cachix/devenv";
-      inputs = {
-        flake-compat.follows = "flake-compat";
-        git-hooks.follows = "git-hooks";
-      };
-    };
-
-    devshell = {
-      url = "github:numtide/devshell";
-      inputs.nixpkgs.follows = "nixpkgs-lib";
-    };
-
-    # ← ditambahkan: diperlukan oleh devenv.nix
-    android-nixpkgs = {
-      url = "github:tadfisher/android-nixpkgs/stable";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        devshell.follows = "devshell";
-        flake-utils.follows = "flake-utils";
-      };
-    };
+    rust.url    = "path:./rust";
+    flutter.url = "path:./flutter";
+    bun.url     = "path:./bun";
+    nodejs.url  = "path:./nodejs";
   };
 }

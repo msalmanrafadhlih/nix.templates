@@ -11,10 +11,10 @@
 
       # nix develop github:msalmanrafadhlih/nix.templates#<template> --impure
       devShells = lib.genAttrs lib.systems.flakeExposed (system: {
-        flutter    = inputs.flutter-template.devShells.${system}.default;
-        nodejs     = inputs.nodejs-template.devShells.${system}.default;
-        rust-basic = inputs.rust-template.devShells.${system}.default;
-        bun        = inputs.bun-template.devShells.${system}.default;
+        flutter    = inputs.flutter.devShells.${system}.default;
+        nodejs     = inputs.nodejs.devShells.${system}.default;
+        rust-basic = inputs.rust.devShells.${system}.default;
+        bun        = inputs.bun.devShells.${system}.default;
       });
 
       # inputs.<thisrepo>.devenvModules.<template>

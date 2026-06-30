@@ -1,11 +1,15 @@
-{
-  toolchain,
-  inputs,
-  pkgs,
-  ...
-}:
- inputs.devenv.lib.mkShell {
-  inherit inputs pkgs;
+{ inputs, pkgs, ... }: let
+  system = pkgs.stdenv.hostPlatform.system;
+  fenix = inputs.fenix;
+  toolchain = fenix.packages.${system}.combine [
+    fenix.packages.${system}.stable.cargo
+    fenix.packages.${system}.stable.rustc
+    fenix.packages.${system}.stable.rust-src
+    fenix.packages.${system}.stable.rust-analyzer
+    fenix.packages.${system}.stable.clipy
+    fenix.packages.${system}.stable.rustfmt
+  ];
+in {
   packages = [ toolchain ] ++ (with pkgs; [
     cargo-watch # auto-rebuild saat file berubah
     cargo-edit # cargo add/rm/upgrade

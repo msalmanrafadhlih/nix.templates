@@ -99,9 +99,6 @@
           };
         };
 
-        devenvModules.default = import ./devenv.nix { inherit pkgs inputs; };
-
-
         # packages: untuk build production dengan Nix (reproducible)
         # Cara pakai: nix build .#nextjs
         # Hasil build ada di: ./result/bin/my-app dan ./result/lib/
@@ -156,5 +153,7 @@
           });
         };
       }
-    );
+    ) // {
+      devenvModules.default = import ./devenv.nix;
+    };
 }

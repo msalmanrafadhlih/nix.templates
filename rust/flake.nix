@@ -45,7 +45,7 @@
       {
         devShells.default = inputs.devenv.lib.mkShell {
           inherit inputs pkgs;
-          imports = [ ./devenv.nix ];
+          modules = [ ./devenv.nix ];
         };
 
         # Build project sebagai paket Nix

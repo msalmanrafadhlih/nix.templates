@@ -1,6 +1,7 @@
-{ inputs, pkgs, ... }: let
+{ templateInputs }:
+{ pkgs, ... }: let
   system = pkgs.stdenv.hostPlatform.system;
-  fenix = inputs.fenix;
+  fenix = templateInputs.fenix;
   toolchain = fenix.packages.${system}.combine [
     fenix.packages.${system}.stable.cargo
     fenix.packages.${system}.stable.rustc
